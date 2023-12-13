@@ -1,0 +1,22 @@
+MainForm icin ihtiyacin olan seyler : 
+
+    for Visuals :
+        a background photo,
+        a photo for the LoginForm,
+
+    
+    Admin Panel :
+        add room, 
+        remove room,
+        add employeAccount,
+        remove employeAccount,
+
+
+        
+    Hotel management :
+        our MainFrame will be containing the reception,
+        new customer,
+        avaibleRooms,
+        CheckOut,
+        reservation,
+
