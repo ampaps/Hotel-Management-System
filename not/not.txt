@@ -14,9 +14,38 @@ MainForm icin ihtiyacin olan seyler :
 
         
     Hotel management :
+        foto olarak dusuk cozunurluklu bir foto kullan,
         our MainFrame will be containing the reception,
         new customer,
         avaibleRooms,
         CheckOut,
         reservation,
 
+
+    Random :
+    fotografi arka palana koymak icin ...
+            private class ContentPanel extends ImagePanel {
+        public ContentPanel(String imagePath) {
+            super(imagePath);
+        }
+    }
+
+    private class ImagePanel extends JPanel {
+        private BufferedImage backgroundImage;
+
+        public ImagePanel(String imagePath) {
+            try {
+                backgroundImage = ImageIO.read(new File(imagePath));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            if (backgroundImage != null) {
+                g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+            }
+        }
+    }

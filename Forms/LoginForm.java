@@ -107,8 +107,9 @@ public class LoginForm extends JFrame {
                                 .addContainerGap()));
     }// </editor-fold>
 
-    private void openMainFrame() {
-        // MainForm mainForm = new MainForm() ;
+    private void openMainForm() {
+        MainForm mainForm = new MainForm();
+        mainForm.setVisible(true);
     }
 
     private void LoginButtonActionPerformed(ActionEvent e) {
@@ -134,7 +135,7 @@ public class LoginForm extends JFrame {
                     notFound = false;
                     JOptionPane.showConfirmDialog(this, "succesfully logged in ", "Login", JOptionPane.DEFAULT_OPTION);
                     this.dispose();
-                    openMainFrame();
+                    openMainForm();
                 }
             }
             if (notFound) {
