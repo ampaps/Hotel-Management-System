@@ -11,6 +11,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.awt.*;
 import javax.swing.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  *
@@ -117,7 +119,12 @@ public class LoginForm extends JFrame {
     }
 
     private void verifyUser() {
-        String fileLocation = "/home/paps/ivirzivir/Proje/Data/Users.txt";
+        String linuxFilePath = "Data/Users.txt";
+
+        String fileLocation = changePath(linuxFilePath);
+        // uncomment if using linux
+        // String fileLocation = linuxFilePath;
+
         try (FileReader fileReader = new FileReader(fileLocation);
                 BufferedReader bufferedReader = new BufferedReader(fileReader)) {
 
@@ -147,6 +154,17 @@ public class LoginForm extends JFrame {
             // Handle IOException (e.g., file not found or permission issues)
             e.printStackTrace();
         }
+    }
+
+    // changes linux path to a windows path
+    private String changePath(String LinuxFilePath) {
+        Path linuxPath = Paths.get(LinuxFilePath);
+
+        Path windowsPath = linuxPath.toAbsolutePath().normalize();
+        String windowsFilePath = windowsPath.toString();
+
+        return windowsFilePath;
+
     }
 
     // myVariables

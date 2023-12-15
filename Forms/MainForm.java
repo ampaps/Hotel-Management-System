@@ -21,7 +21,7 @@ import java.awt.image.*;
  */
 public class MainForm extends javax.swing.JFrame {
 
-    private String photoLocation = "/home/paps/NetBeansProjects/GUIBuilder/src/main/java/rubi-platinum-spa-resort-suites-genel-f2d66902-c4b1-4e20-b58e-243283952c64.jpg";
+    private String photoLocation = "/Images/photo.png";
 
     private class ContentPanel extends ImagePanel {
         public ContentPanel(String imagePath) {
