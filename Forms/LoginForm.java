@@ -29,6 +29,7 @@ public class LoginForm extends JFrame {
         this.setVisible(true);
         this.setSize(450, 150);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        centerFrame(this);
 
     }
 
@@ -183,6 +184,16 @@ public class LoginForm extends JFrame {
         SwingUtilities.invokeLater(() -> {
             LoginForm form = new LoginForm();
         });
+    }
+
+    private void centerFrame(JFrame fr) {
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        int w = fr.getSize().width;
+        int h = fr.getSize().height;
+        int x = (dim.width - w) / 2;
+        int y = (dim.height - h) / 2;
+
+        fr.setLocation(x, y);
     }
 
 }

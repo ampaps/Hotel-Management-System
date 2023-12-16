@@ -3,6 +3,8 @@ MainForm icin ihtiyacin olan seyler :
     for Visuals :
         a background photo,
         a photo for the LoginForm,
+        a photo for all the forms,
+
 
     
     Admin Panel :
@@ -16,6 +18,10 @@ MainForm icin ihtiyacin olan seyler :
     Hotel management :
         foto olarak dusuk cozunurluklu bir foto kullan,
         our MainFrame will be containing the reception,
+        checkIn,
+        Rooms,
+        makeReservation,
+        cancelReservation,
         new customer,
         avaibleRooms,
         CheckOut,
