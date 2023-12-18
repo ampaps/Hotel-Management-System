@@ -151,19 +151,21 @@ public class AdminForm extends javax.swing.JFrame {
     }// </editor-fold>
 
     private void addRoomButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        // AddRoomFrom addRoomFrom = new AddRoomFrom();
     }
 
     private void removeRoomButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        // RemvoeRoomForm removeRoomForm = new RemvoeRoomForm();
     }
 
     private void removeUserButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        // RemoveUserForm removeUserForm = new removeUserForm();
     }
 
     private void addUserButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        AddUserForm addUserForm = new AddUserForm();
+        addUserForm.setVisible(true);
+        centerFrame(addUserForm);
     }
 
     /**
@@ -200,7 +202,9 @@ public class AdminForm extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AdminForm().setVisible(true);
+                AdminForm adminForm = new AdminForm();
+                adminForm.setVisible(true);
+                adminForm.centerFrame(adminForm);
             }
         });
     }

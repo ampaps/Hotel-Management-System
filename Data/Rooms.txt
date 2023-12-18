@@ -1,3 +1,7 @@
 
-1 singleB 0 // 0 at the end of the line means it's not occupied  
-2 doubleB 1 
+1 singleB 2500 0
+2 doubleB 3000 0 
+3 singleB 2500 0
+4 singleB 2500 0
+5 doubleB 3000 0
+

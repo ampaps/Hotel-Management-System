@@ -60,11 +60,11 @@ public class Reseption extends javax.swing.JFrame {
         newCustomerButton.setText("New Customer");
         newCustomerButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // NewCustomerForm newCustomerForm = new NewCustomerForm();
-                // newCustomerForm.setVisible(true);
-                // centerFrame(newCustomerForm);
-                // dispose();
-                // newCustomerForm.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                NewCustomer newCustomerForm = new NewCustomer();
+                newCustomerForm.setVisible(true);
+                centerFrame(newCustomerForm);
+                dispose();
+                newCustomerForm.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             }
         });
 

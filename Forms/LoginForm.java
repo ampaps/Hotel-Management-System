@@ -182,7 +182,7 @@ public class LoginForm extends JFrame {
     // test GUI
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            LoginForm form = new LoginForm();
+            new LoginForm();
         });
     }
 
