@@ -16,6 +16,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.Buffer;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +26,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -124,12 +126,6 @@ public class NewCustomer extends javax.swing.JFrame {
                     return;
                 } else {
                     addCustomer();
-                    Reseption reseption = new Reseption();
-                    reseption.setVisible(true);
-                    centerFrame(reseption);
-                    dispose();
-                    JOptionPane.showMessageDialog(null, "Customer added successfully", "Success",
-                            JOptionPane.INFORMATION_MESSAGE);
                 }
             }
 
@@ -329,6 +325,10 @@ public class NewCustomer extends javax.swing.JFrame {
                 if (parts.length > 1) {
                     if (parts[0].equals(selectedRoomNumber)) {
                         parts[3] = "1";
+                        String duration = jTextField1.getText();
+                        parts[4] = LocalDate.now().toString();
+                        parts[5] = LocalDate.now().plusDays(Integer.parseInt(duration)).toString();
+
                         line = String.join(" ", parts);
                     }
                 }
@@ -351,19 +351,48 @@ public class NewCustomer extends javax.swing.JFrame {
         String name = nameTField.getText();
         String surname = surnameTField.getText();
         String id = IDTField.getText();
+        String roomID = roomNumber();
 
-        try (PrintWriter writer = new PrintWriter(new FileWriter("Data/customers.txt", true))) {
-            writer.println(name + " " + surname + " " + id);
-
+        try (BufferedReader br = new BufferedReader(new FileReader("Data/Customers.txt"))) {
+            String line;
+            boolean customerExists = false;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(" ");
+                if (parts.length > 1) {
+                    if (parts[0].equals(name) || parts[1].equals(surname) && parts[2].equals(id)) {
+                        customerExists = true;
+                        break;
+                    }
+                }
+            }
+            if (customerExists) {
+                JOptionPane.showMessageDialog(null, "Customer already exists", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                try (PrintWriter writer = new PrintWriter(new FileWriter("Data/Customers.txt", true))) {
+                    writer.println(name + " " + surname + " " + id + " " + roomID);
+                    updateRoomStatus();
+                    openReseption();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
+    private void openReseption() {
+        Reseption reseption = new Reseption();
+        reseption.setVisible(true);
+        centerFrame(reseption);
+        dispose();
+        String roomPrice = "Room price : " + getRoomPrice();
+        JOptionPane.showMessageDialog(null, "Customer added successfully\n" + roomPrice, "Success",
+                JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void addCustomer() {
         updateCustomer();
-        updateRoomStatus();
     }
 
     private void showRoomsForComboBox() {
@@ -374,7 +403,6 @@ public class NewCustomer extends javax.swing.JFrame {
                 if (parts.length > 1) {
                     String roomNumber = parts[0];
                     String roomType = parts[1];
-                    String roomPrice = parts[2];
                     String roomStatus = parts[3];
 
                     if (roomStatus.equals("0")) {
@@ -385,6 +413,50 @@ public class NewCustomer extends javax.swing.JFrame {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private String roomPrice() {
+        try (BufferedReader br = new BufferedReader(new FileReader("Data/Rooms.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(" ");
+                if (parts.length > 1) {
+                    String roomPrice = parts[2];
+                    return roomPrice;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private String roomNumber() {
+        try (BufferedReader br = new BufferedReader(new FileReader("Data/Rooms.txt"))) {
+            String data = (String) JComboBoxRooms.getSelectedItem();
+            String[] dataParts = data.split(" ");
+            String roomNumber = dataParts[0];
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(" ");
+                if (parts.length > 1) {
+                    if (roomNumber.equals(parts[0])) {
+                        return parts[0];
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private double getRoomPrice() {
+        String roomPrice = roomPrice();
+        String duration = jTextField1.getText();
+        double price = Double.parseDouble(roomPrice) * Double.parseDouble(duration);
+        return price;
     }
 
     // Variables declaration - do not modify

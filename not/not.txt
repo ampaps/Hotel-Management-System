@@ -1,57 +1,11 @@
-MainForm icin ihtiyacin olan seyler : 
 
-    for Visuals :
-        a background photo,
-        a photo for the LoginForm,
-        a photo for all the forms,
+checkIn i yap,
+reservation icin tarih ekle ve insanlar buna gore chcekIn yapabilsinler,
+make resrvation,
+cancel reservation,
+check reservation,
+check out,
 
-
+after : 
+    rooms u ve avaible rooms u daha estetik yap,
     
-    Admin Panel :
-        add room, 
-        remove room,
-        add employeAccount,
-        remove employeAccount,
-
-
-        
-    Hotel management :
-        foto olarak dusuk cozunurluklu bir foto kullan,
-        our MainFrame will be containing the reception,
-        checkIn,
-        Rooms,
-        makeReservation,
-        cancelReservation,
-        new customer,
-        avaibleRooms,
-        CheckOut,
-        reservation,
-
-
-    Random :
-    fotografi arka palana koymak icin ...
-            private class ContentPanel extends ImagePanel {
-        public ContentPanel(String imagePath) {
-            super(imagePath);
-        }
-    }
-
-    private class ImagePanel extends JPanel {
-        private BufferedImage backgroundImage;
-
-        public ImagePanel(String imagePath) {
-            try {
-                backgroundImage = ImageIO.read(new File(imagePath));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            if (backgroundImage != null) {
-                g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
-            }
-        }
-    }

@@ -6,7 +6,15 @@ package Forms;
 
 import javax.swing.*;
 import java.awt.event.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.awt.*;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  *
@@ -157,11 +165,102 @@ public class AdminForm extends javax.swing.JFrame {
     }
 
     private void removeRoomButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // RemvoeRoomForm removeRoomForm = new RemvoeRoomForm();
+        JComboBox<String> JComboBoxRooms = new JComboBox<String>();
+        showRoomsForComboBox(JComboBoxRooms);
+        Object[] message = { "Select the room you want to remove", JComboBoxRooms };
+        int option = JOptionPane.showConfirmDialog(null, message, "Remove Room", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            String selectedRoom = (String) JComboBoxRooms.getSelectedItem();
+            removeRoomFromFile(selectedRoom);
+        }
+    }
+
+    // Method to remove the selected room from the Rooms.txt file
+    private void removeRoomFromFile(String room) {
+        String[] parts = room.split(" ");
+        String roomID = parts[0];
+
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader bf = new BufferedReader(new FileReader("Data/Rooms.txt"))) {
+            String line;
+            while ((line = bf.readLine()) != null) {
+                String[] parts2 = line.split(" ");
+                if (parts2.length > 1) {
+                    String roomNumber = parts2[0];
+                    if (!roomNumber.equals(roomID)) {
+                        lines.add(line);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try (PrintWriter writer = new PrintWriter(new FileWriter("Data/Rooms.txt"))) {
+            for (String line : lines) {
+                writer.println(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void removeUserButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // RemoveUserForm removeUserForm = new removeUserForm();
+        JComboBox<String> JComboBoxUsers = new JComboBox<String>();
+        showUsersForComboBox(JComboBoxUsers);
+        Object[] message = { "Select the user you want to remove", JComboBoxUsers };
+        int option = JOptionPane.showConfirmDialog(null, message, "Remove User", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            String selectedUser = (String) JComboBoxUsers.getSelectedItem();
+            removeUserFromFile(selectedUser);
+        }
+    }
+
+    private void removeUserFromFile(String selectedUser) {
+        String[] parts = selectedUser.split(" ");
+        String username = parts[0];
+
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader bf = new BufferedReader(new FileReader("Data/Users.txt"))) {
+            String line;
+            while ((line = bf.readLine()) != null) {
+                String[] parts2 = line.split(" ");
+                if (parts2.length > 1) {
+                    String usernameFromFile = parts2[0];
+                    if (!usernameFromFile.equals(username)) {
+                        lines.add(line);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try (PrintWriter writer = new PrintWriter(new FileWriter("Data/Users.txt"))) {
+            for (String line : lines) {
+                writer.println(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Method to show Users From Users.txt file
+    private void showUsersForComboBox(JComboBox<String> JComboBoxUsers) {
+        try (BufferedReader br = new BufferedReader(new FileReader("Data/Users.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(" ");
+                if (parts.length > 1) {
+                    String username = parts[0];
+                    String password = parts[1];
+
+                    JComboBoxUsers.addItem(username + " " + password);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void addUserButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -209,6 +308,27 @@ public class AdminForm extends javax.swing.JFrame {
                 adminForm.centerFrame(adminForm);
             }
         });
+    }
+
+    private void showRoomsForComboBox(JComboBox<String> JComboBoxRooms) {
+        try (BufferedReader br = new BufferedReader(new FileReader("Data/Rooms.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(" ");
+                if (parts.length > 1) {
+                    String roomNumber = parts[0];
+                    String roomType = parts[1];
+                    String roomPrice = parts[2];
+                    String roomStatus = parts[3];
+
+                    if (roomStatus.equals("0")) {
+                        JComboBoxRooms.addItem(roomNumber + " " + roomType);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // Variables declaration - do not modify

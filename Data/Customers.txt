@@ -1,6 +1,1 @@
-name surname id roomNumber   
-
-  
-
-
-
+mehmet akdemir 123 0  

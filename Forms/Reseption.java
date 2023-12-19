@@ -1,11 +1,23 @@
 package Forms;
 
+import java.awt.Button;
 import java.awt.Dimension;
+import java.awt.Label;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import java.awt.Label;
+import javax.swing.JButton;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -112,7 +124,12 @@ public class Reseption extends javax.swing.JFrame {
             }
         });
 
-        logoutButton.setText("Logout");
+        logoutButton.setText("Exit");
+        logoutButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                logoutButtonActionPerformed(e);
+            }
+        });
 
         adminButton.setText("Admin");
         adminButton.addActionListener(new ActionListener() {
@@ -227,7 +244,21 @@ public class Reseption extends javax.swing.JFrame {
     }// </editor-fold>
 
     private void avaibleRoomsButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        StringBuilder rooms = new StringBuilder();
+        try (BufferedReader br = new BufferedReader(new FileReader("Data/Rooms.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(" ");
+                if (parts[3].equals("0")) {
+                    rooms.append("").append(parts[0]).append("  ").append(parts[1])
+                            .append("    Room Price: ").append(parts[2]).append("\n");
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        JOptionPane.showMessageDialog(null, rooms.toString(), "Avaible Rooms", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void cancelReservationButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -235,7 +266,19 @@ public class Reseption extends javax.swing.JFrame {
     }
 
     private void roomsButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        StringBuilder rooms = new StringBuilder();
+        try (BufferedReader br = new BufferedReader(new FileReader("Data/Rooms.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(" ");
+                rooms.append("").append(parts[0]).append("  ").append(parts[1])
+                        .append("    Room Price: ").append(parts[2]).append("\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        JOptionPane.showMessageDialog(null, rooms.toString(), "Rooms", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void CheckReservationButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -247,7 +290,10 @@ public class Reseption extends javax.swing.JFrame {
     }
 
     private void checkOutButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        CheckOutForm checkOutForm = new CheckOutForm();
+        checkOutForm.setVisible(true);
+        checkOutForm.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        centerFrame(checkOutForm);
     }
 
     /**
@@ -284,7 +330,9 @@ public class Reseption extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Reseption().setVisible(true);
+                Reseption reseption = new Reseption();
+                reseption.setVisible(true);
+                reseption.centerFrame(reseption);
             }
         });
     }
@@ -297,6 +345,22 @@ public class Reseption extends javax.swing.JFrame {
         int y = (dim.height - h) / 2;
 
         fr.setLocation(x, y);
+    }
+
+    // changed to exit button instead of logout
+    private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        int dialogButton = JOptionPane.YES_NO_OPTION;
+        int dialogResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to exit?", "Exit",
+                dialogButton);
+        if (dialogResult == 0) {
+            disposeAll();
+        }
+    }
+
+    private void disposeAll() {
+        for (Window window : Window.getWindows()) {
+            window.dispose();
+        }
     }
 
     // Variables declaration - do not modify
