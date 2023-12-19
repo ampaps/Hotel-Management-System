@@ -151,7 +151,9 @@ public class AdminForm extends javax.swing.JFrame {
     }// </editor-fold>
 
     private void addRoomButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // AddRoomFrom addRoomFrom = new AddRoomFrom();
+        AddRoomForm addRoomForm = new AddRoomForm();
+        addRoomForm.setVisible(true);
+        centerFrame(addRoomForm);
     }
 
     private void removeRoomButtonActionPerformed(java.awt.event.ActionEvent evt) {

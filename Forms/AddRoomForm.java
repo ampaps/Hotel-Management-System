@@ -6,8 +6,18 @@ package Forms;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.Buffer;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -48,6 +58,13 @@ public class AddRoomForm extends javax.swing.JFrame {
         jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         jButton1.setText("ADD");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+
+                int roomNumber = getRoomNumber();
+
+            }
+        });
 
         jButton2.setText("CANCEL");
 
@@ -140,6 +157,15 @@ public class AddRoomForm extends javax.swing.JFrame {
         int y = (dim.height - h) / 2;
 
         fr.setLocation(x, y);
+    }
+
+    private void addRoom(int roomNumber, String roomType, double roomPrice) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Data/Rooms.txt", true))) {
+            writer.write(roomNumber + " " + roomType + " " + roomPrice + "0" + "\n");
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // Variables declaration - do not modify

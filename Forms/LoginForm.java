@@ -29,6 +29,7 @@ public class LoginForm extends JFrame {
         this.setVisible(true);
         this.setSize(450, 150);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setResizable(false);
         centerFrame(this);
 
     }
