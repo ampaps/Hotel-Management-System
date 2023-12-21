@@ -260,9 +260,11 @@ public class Reseption extends javax.swing.JFrame {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(" ");
-                if (parts[3].equals("0")) {
-                    rooms.append("").append(parts[0]).append("  ").append(parts[1])
-                            .append("    Room Price: ").append(parts[2]).append("\n");
+                if (parts.length > 1) {
+                    if (parts[3].equals("0")) {
+                        rooms.append("").append(parts[0]).append("  ").append(parts[1])
+                                .append("    Room Price: ").append(parts[2]).append("\n");
+                    }
                 }
             }
         } catch (IOException e) {
@@ -282,8 +284,10 @@ public class Reseption extends javax.swing.JFrame {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(" ");
-                rooms.append("").append(parts[0]).append("  ").append(parts[1])
-                        .append("    Room Price: ").append(parts[2]).append("\n");
+                if (parts.length > 1) {
+                    rooms.append("").append(parts[0]).append("  ").append(parts[1])
+                            .append("    Room Price: ").append(parts[2]).append("\n");
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();

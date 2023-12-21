@@ -306,10 +306,8 @@ public class CheckOutForm extends javax.swing.JFrame {
                 String[] parts = line.split(" ");
                 if (roomID.equals(parts[0])) {
                     String[] roomData = line.split(" ");
-                    // roomData[3] change it to 0 (not occpuied)
+                    // Update room status
                     roomData[3] = "0";
-                    roomData[5] = "0";
-                    roomData[4] = "0";
                     line = String.join(" ", roomData);
                     JOptionPane.showMessageDialog(null, "Successfully updated room status");
                 }
@@ -319,7 +317,6 @@ public class CheckOutForm extends javax.swing.JFrame {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     private void updateCustomerId() {
