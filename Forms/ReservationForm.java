@@ -6,8 +6,6 @@ package Forms;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.FileReader;
 
 /**
  *
@@ -62,8 +60,6 @@ public class ReservationForm extends javax.swing.JFrame {
         newReserveButton = new javax.swing.JButton();
         newCancelButton = new javax.swing.JButton();
 
-        showCustomerNames();
-        
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Make Reservation");
 
@@ -79,14 +75,14 @@ public class ReservationForm extends javax.swing.JFrame {
         oldReserveButton.setText("RESERVE");
         oldReserveButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                oldReserveButtonActionPerformed(evt);
+                // oldReserveButtonActionPerformed(evt);
             }
         });
 
         oldCancelButton.setText("CANCEL");
         oldCancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                dispose();
+                // oldCancelButtonActionPerformed(evt);
             }
         });
 
@@ -320,11 +316,7 @@ public class ReservationForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>
 
-    protected void oldReserveButtonActionPerformed(ActionEvent evt) {
-
-}
-
-protected void newReserveButtonActionPerformed(ActionEvent evt) {
+    protected void newReserveButtonActionPerformed(ActionEvent evt) {
     }
 
     /**
@@ -368,24 +360,6 @@ protected void newReserveButtonActionPerformed(ActionEvent evt) {
                 new ReservationForm().setVisible(true);
             }
         });
-    }
-
-     private void showCustomerNames() {
-        String searchText = oldSearchBar.getText();
-        oldCustomerComboBox.removeAllItems();
-        try (BufferedReader br = new BufferedReader(new FileReader("Data/Customers.txt"))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] parts = line.split(" ");
-                if (parts.length > 1 && parts[3].equals("0")) {
-                    if (line.contains(searchText)) {
-                        oldCustomerComboBox.addItem(line);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     // Variables declaration - do not modify

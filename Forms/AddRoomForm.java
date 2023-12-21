@@ -60,9 +60,46 @@ public class AddRoomForm extends javax.swing.JFrame {
         jButton1.setText("ADD");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
+                String roomType = jComboBox1.getSelectedItem().toString();
+                String roomNumber = jTextField1.getText();
+                String roomStatus = "0";
+                String roomPrice = "";
+                // occupied until this date
+                String occupiedDate = "21.12.2023";
 
-                // int roomNumber = getRoomNumber();
+                if (roomType == "singleB") {
+                    roomPrice = "1500";
+                } else {
+                    roomPrice = "2500";
+                }
 
+                try {
+                    Path path = Paths.get("Data/Rooms.txt");
+                    BufferedReader br = new BufferedReader(new FileReader(path.toString()));
+                    String line;
+                    boolean roomExists = false;
+                    while ((line = br.readLine()) != null) {
+                        String[] room = line.split(" ");
+                        if (room[0].equals(roomNumber)) {
+                            roomExists = true;
+                            break;
+                        }
+                        line = br.readLine();
+                    }
+                    br.close();
+                    if (roomExists) {
+                        JOptionPane.showMessageDialog(null, "Room already exists");
+                    } else {
+                        BufferedWriter bw = new BufferedWriter(new FileWriter(path.toString(), true));
+                        bw.write(roomNumber + " " + roomType + " " + roomPrice + " " + roomStatus);
+                        bw.newLine();
+                        bw.close();
+                        JOptionPane.showMessageDialog(null, "Room added successfully");
+                        dispose();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -145,6 +182,7 @@ public class AddRoomForm extends javax.swing.JFrame {
                 AddRoomForm arf = new AddRoomForm();
                 arf.setVisible(true);
                 arf.centerFrame(arf);
+                arf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             }
         });
     }
@@ -157,15 +195,6 @@ public class AddRoomForm extends javax.swing.JFrame {
         int y = (dim.height - h) / 2;
 
         fr.setLocation(x, y);
-    }
-
-    private void addRoom(int roomNumber, String roomType, double roomPrice) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Data/Rooms.txt", true))) {
-            writer.write(roomNumber + " " + roomType + " " + roomPrice + "0" + "\n");
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     // Variables declaration - do not modify
