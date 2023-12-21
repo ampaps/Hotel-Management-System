@@ -27,6 +27,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
+import java.time.LocalDate;
 
 /**
  *
@@ -313,6 +314,34 @@ public class NewCustomer extends javax.swing.JFrame {
 
     // }
 
+    // check if room is available for the date
+    private boolean checkAvaibilityForDate() {
+        String temp = (String) JComboBoxRooms.getSelectedItem();
+        String roomNumber = temp.split(" ")[0];
+        LocalDate now = LocalDate.now();
+
+        try (BufferedReader br = new BufferedReader(new FileReader("Data/Reservations.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(" ");
+                if (parts.length > 2) {
+                    if (parts[3].equals(roomNumber)) {
+                        LocalDate startDate = LocalDate.parse(parts[4]);
+                        LocalDate endDate = LocalDate.parse(parts[5]);
+                        if ((now.isEqual(startDate) || now.isAfter(startDate))
+                                && (now.isEqual(endDate) || now.isBefore(endDate))) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return true;
+    }
+
     private void updateRoomStatus() {
         String temp = (String) JComboBoxRooms.getSelectedItem();
         String selectedRoomNumber = temp.split(" ")[0];
@@ -325,9 +354,6 @@ public class NewCustomer extends javax.swing.JFrame {
                 if (parts.length > 1) {
                     if (parts[0].equals(selectedRoomNumber)) {
                         parts[3] = "1";
-                        String duration = jTextField1.getText();
-                        parts[4] = LocalDate.now().toString();
-                        parts[5] = LocalDate.now().plusDays(Integer.parseInt(duration)).toString();
 
                         line = String.join(" ", parts);
                     }
@@ -369,9 +395,15 @@ public class NewCustomer extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Customer already exists", "Error", JOptionPane.ERROR_MESSAGE);
             } else {
                 try (PrintWriter writer = new PrintWriter(new FileWriter("Data/Customers.txt", true))) {
-                    writer.println(name + " " + surname + " " + id + " " + roomID);
-                    updateRoomStatus();
-                    openReseption();
+                    if (checkAvaibilityForDate()) {
+                        writer.println(name + " " + surname + " " + id + " " + roomID);
+                        updateRoomStatus();
+                        openReseption();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Room is not available for the date", "Error",
+                                JOptionPane.ERROR_MESSAGE);
+
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
