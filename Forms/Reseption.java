@@ -35,6 +35,7 @@ public class Reseption extends javax.swing.JFrame {
      */
     public Reseption() {
         initComponents();
+        this.setResizable(false);
     }
 
     /**
@@ -81,6 +82,16 @@ public class Reseption extends javax.swing.JFrame {
         });
 
         checkInButton.setText("Check In");
+        checkInButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CheckInForm checkInForm = new CheckInForm();
+                checkInForm.setVisible(true);
+                checkInForm.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                checkInForm.setResizable(false);
+                centerFrame(checkInForm);
+                dispose();
+            }
+        });
 
         avaibleRoomsButton.setText("Avaible Rooms");
         avaibleRoomsButton.addActionListener(new java.awt.event.ActionListener() {
@@ -286,7 +297,11 @@ public class Reseption extends javax.swing.JFrame {
     }
 
     private void makeReservationButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        ReservationForm makeReservationForm = new ReservationForm();
+        makeReservationForm.setVisible(true);
+        makeReservationForm.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        dispose();
+        centerFrame(makeReservationForm);
     }
 
     private void checkOutButtonActionPerformed(java.awt.event.ActionEvent evt) {

@@ -1,2 +1,0 @@
-name  surname  id  reserved room number
-mehmet akdemir 123123 15

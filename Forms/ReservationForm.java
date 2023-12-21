@@ -4,8 +4,11 @@ package Forms;
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -16,6 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 /**
  *
@@ -23,11 +32,29 @@ import javax.swing.JComboBox;
  */
 public class ReservationForm extends javax.swing.JFrame {
 
+        private void centerFrame(JFrame fr) {
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        int w = fr.getSize().width;
+        int h = fr.getSize().height;
+        int x = (dim.width - w) / 2;
+        int y = (dim.height - h) / 2;
+
+        fr.setLocation(x, y);
+    }
+
     /**
      * Creates new form ReservationForm
      */
     public ReservationForm() {
         initComponents();
+        this.setResizable(false);
+        this.addWindowListener(new WindowAdapter() {
+                public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                        Reseption reseption = new Reseption();
+                        reseption.setVisible(true);
+                        centerFrame(reseption);
+                }
+        });
     }
 
     /**
@@ -65,13 +92,14 @@ public class ReservationForm extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         newDurationInput = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
-        newRoomsComboBox = new javax.swing.JTextField();
+        newRoomsComboBox = new javax.swing.JComboBox<>();
         jLabel10 = new javax.swing.JLabel();
         newReserveButton = new javax.swing.JButton();
         newCancelButton = new javax.swing.JButton();
 
         showCustomerNames();
         showRoomsForComboBox(oldRoomsComboBox);
+        showRoomsForComboBox(newRoomsComboBox);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Make Reservation");
@@ -88,7 +116,14 @@ public class ReservationForm extends javax.swing.JFrame {
         oldReserveButton.setText("RESERVE");
         oldReserveButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
+                if (oldDateInput.getText().equals("") || oldDurationInput.getText().equals("")) {
+                        JOptionPane.showMessageDialog(null, "Please fill all the fields", "Error",
+                                        JOptionPane.ERROR_MESSAGE);
+                        return;
+                        
+                } else {
                 oldReserveButtonActionPerformed(evt);
+                }
             }
         });
 
@@ -197,8 +232,26 @@ public class ReservationForm extends javax.swing.JFrame {
         jLabel10.setText("write the date as follow 2023-12-19");
 
         newReserveButton.setText("RESERVE");
+        newReserveButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent evt) {
+                        if (newNameInput.getText().equals("") || newSurnameInput.getText().equals("")
+                                        || newIDInput.getText().equals("") || newDateInput.getText().equals("")
+                                        || newDurationInput.getText().equals("")|| newRoomsComboBox.getSelectedItem().toString().equals("")) {
+                                JOptionPane.showMessageDialog(null, "Please fill all the fields", "Error",
+                                                JOptionPane.ERROR_MESSAGE);
+                                return;
+                        } else {
+                                newReserveRoom();
+                        }
+                }
+        });
 
         newCancelButton.setText("CANCEL");
+        newCancelButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent evt) {
+                        dispose();
+                }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -317,8 +370,48 @@ public class ReservationForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>
 
-    private void oldReserveButtonActionPerformed(ActionEvent evt) {
+    private void newReserveRoom() {
+        LocalDate[] dates = getDates(newDateInput, newDurationInput);
+        String customerData = getCustomerData(newNameInput, newSurnameInput, newIDInput);
+        String roomData = getRoomData(newRoomsComboBox);
 
+        String[] customerParts = customerData.split(" ");
+        String[] roomParts = roomData.split(" ");
+
+        String customerName = customerParts[0];
+        String customerSurname = customerParts[1];
+        String customerID = customerParts[2];
+        String roomNumber = roomParts[0];
+
+        try(BufferedReader br = new BufferedReader(new FileReader("Data/Reservations.txt"))) {
+                String line;
+                while((line = br.readLine()) != null){
+                        String[] parts = line.split(" ");
+                        if(parts.length > 1){
+                        String room = parts[3];
+                        if(room.equals(roomNumber)){
+                                JOptionPane.showMessageDialog(null, "Room is already reserved");
+                                return;
+                        }
+                }
+        }
+}catch(Exception e){
+        e.printStackTrace();
+}
+
+        try (PrintWriter pw = new PrintWriter(new FileWriter("Data/Reservations.txt", true))) {
+            pw.println(customerName + " " + customerSurname + " " + customerID + " " + roomNumber + " " + dates[0]
+                    + " " + dates[1]);
+                    updateCustomer();
+                    JOptionPane.showMessageDialog(null, "Room reserved and new customer added",roomNumber, JOptionPane.INFORMATION_MESSAGE);
+                    dispose();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+}
+
+private void oldReserveButtonActionPerformed(ActionEvent evt) {
+        oldReserveRoom();
     }
 
     /**
@@ -326,8 +419,7 @@ public class ReservationForm extends javax.swing.JFrame {
      */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
-        // <editor-fold defaultstate="collapsed" desc=" Look and feel setting code
-        // (optional) ">
+        // <editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /*
          * If Nimbus (introduced in Java SE 6) is not available, stay with the default
          * look and feel.
@@ -335,138 +427,221 @@ public class ReservationForm extends javax.swing.JFrame {
          * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
+                for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                        if ("Nimbus".equals(info.getName())) {
+                                javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                                break;
+                        }
                 }
-            }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ReservationForm.class.getName()).log(java.util.logging.Level.SEVERE,
-                    null, ex);
+                java.util.logging.Logger.getLogger(ReservationForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ReservationForm.class.getName()).log(java.util.logging.Level.SEVERE,
-                    null, ex);
+                java.util.logging.Logger.getLogger(ReservationForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ReservationForm.class.getName()).log(java.util.logging.Level.SEVERE,
-                    null, ex);
+                java.util.logging.Logger.getLogger(ReservationForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ReservationForm.class.getName()).log(java.util.logging.Level.SEVERE,
-                    null, ex);
+                java.util.logging.Logger.getLogger(ReservationForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         // </editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ReservationForm().setVisible(true);
-            }
+                public void run() {
+                        new ReservationForm().setVisible(true);
+                }
         });
-    }
+}
 
-    private void showCustomerNames() {
-        String searchText = oldSearchBar.getText();
-        oldCustomerComboBox.removeAllItems();
-        try (BufferedReader br = new BufferedReader(new FileReader("Data/Customers.txt"))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] parts = line.split(" ");
-                if (parts.length > 1 && parts[3].equals("0")) {
-                    if (line.contains(searchText)) {
-                        oldCustomerComboBox.addItem(line);
-                    }
+        private void showCustomerNames() {
+                String searchText = oldSearchBar.getText();
+                oldCustomerComboBox.removeAllItems();
+                try (BufferedReader br = new BufferedReader(new FileReader("Data/Customers.txt"))) {
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                                String[] parts = line.split(" ");
+                                if (parts.length > 1 && parts[3].equals("0")) {
+                                        if (line.contains(searchText)) {
+                                                oldCustomerComboBox.addItem(line);
+                                        }
+                                }
+                        }
+                } catch (Exception e) {
+                        e.printStackTrace();
                 }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-    }
 
-    private void showRoomsForComboBox(JComboBox<String> JComboBoxRooms) {
-        try (BufferedReader br = new BufferedReader(new FileReader("Data/Rooms.txt"))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] parts = line.split(" ");
-                if (parts.length > 1) {
-                    String roomNumber = parts[0];
-                    String roomType = parts[1];
-                    String roomPrice = parts[2];
-                    String roomStatus = parts[3];
+        private void showRoomsForComboBox(JComboBox<String> JComboBoxRooms) {
+                try (BufferedReader br = new BufferedReader(new FileReader("Data/Rooms.txt"))) {
+                        try (BufferedReader br2 = new BufferedReader(new FileReader("Data/Reservations.txt"))) {
+                                String line;
+                                String line2;
+                                while ((line = br.readLine()) != null) {
+                                        String[] parts = line.split(" ");
+                                        if (parts.length > 1) {
+                                                String roomNumber = parts[0];
+                                                String roomType = parts[1];
+                                                String roomStatus = parts[3];
 
-                    if (roomStatus.equals("0")) {
-                        JComboBoxRooms.addItem(roomNumber + " " + roomType);
-                    }
+                                                if (roomStatus.equals("0")) {
+                                                        boolean isReservable = true;
+                                                        while ((line2 = br2.readLine()) != null) {
+                                                                String[] parts2 = line2.split(" ");
+                                                                if (parts2.length > 1) {
+                                                                        String room = parts2[3];
+                                                                        if (room.equals(roomNumber)) {
+                                                                                isReservable = false;
+                                                                                break;
+                                                                        }
+                                                                }
+                                                        }
+                                                        if (isReservable) {
+                                                                JComboBoxRooms.addItem(roomNumber + " " + roomType);
+                                                        }
+                                                }
+                                        }
+                                }
+                        } catch (Exception e) {
+                                e.printStackTrace();
+                        }
+                } catch (Exception e) {
+                        e.printStackTrace();
                 }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-    }
 
-    private void updateRoomStatus() {
-        String temp = (String) oldRoomsComboBox.getSelectedItem();
-        String selectedRoomNumber = temp.split(" ")[0];
+        private LocalDate[] getDates(JTextField dateInput, JTextField durationInput) {
+                LocalDate[] dates = new LocalDate[2];
 
-        List<String> lines = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader("Data/Rooms.txt"))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] parts = line.split(" ");
-                if (parts.length > 1) {
-                    if (parts[0].equals(selectedRoomNumber)) {
-                        parts[3] = "0";
-                        String duration = oldDurationInput.getText();
-                        parts[4] = LocalDate.now().toString();
-                        parts[5] = LocalDate.now().plusDays(Integer.parseInt(duration)).toString();
+                String date = dateInput.getText();
+                int duration = Integer.parseInt(durationInput.getText());
 
-                        line = String.join(" ", parts);
-                    }
+                dates[0] = LocalDate.parse(date);
+                dates[1] = dates[0].plusDays(duration);
+
+                return dates;
+        }
+
+        private String getCustomerData() {
+                String customerData = oldCustomerComboBox.getSelectedItem().toString();
+                return customerData;
+        }
+
+        private String getCustomerData(JTextField nameInput, JTextField surnameInput, JTextField idInput) {
+                String name = nameInput.getText();
+                String surname = surnameInput.getText();
+                String id = idInput.getText();
+                String customerData = name + " " + surname + " " + id;
+                return customerData;
+        }
+
+        private String getRoomData(JComboBox<String> JComboBoxRooms) {
+                String roomData = JComboBoxRooms.getSelectedItem().toString();
+                return roomData;
+        }
+
+        private void oldReserveRoom() {
+                LocalDate[] dates = getDates(oldDateInput, oldDurationInput);
+                String customerData = getCustomerData();
+                String roomData = getRoomData(oldRoomsComboBox);
+
+                String[] customerParts = customerData.split(" ");
+                String[] roomParts = roomData.split(" ");
+
+                String customerName = customerParts[0];
+                String customerSurname = customerParts[1];
+                String customerID = customerParts[2];
+                String roomNumber = roomParts[0];
+
+                // Instead, you can only show the rooms that can be reserved in the combo box
+                try (BufferedReader br = new BufferedReader(new FileReader("Data/Reservations.txt"))) {
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                                String[] parts = line.split(" ");
+                                if (parts.length > 1) {
+                                        String room = parts[3];
+                                        if (room.equals(roomNumber)) {
+                                                JOptionPane.showMessageDialog(null, "Room is already reserved");
+                                                return;
+                                        }
+                                }
+                        }
+                } catch (Exception e) {
+                        e.printStackTrace();
                 }
-                lines.add(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+
+                try (PrintWriter pw = new PrintWriter(new FileWriter("Data/Reservations.txt", true))) {
+                        pw.println(customerName + " " + customerSurname + " " + customerID + " " + roomNumber + " " + dates[0]
+                                        + " " + dates[1]);
+                        JOptionPane.showMessageDialog(null, "Room reserved successfully", roomNumber, JOptionPane.INFORMATION_MESSAGE);
+                        dispose();
+                } catch (IOException e) {
+                        e.printStackTrace();
+                }
         }
 
-        try (PrintWriter writer = new PrintWriter(new FileWriter("Data/Rooms.txt"))) {
-            for (String line : lines) {
-                writer.println(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+        private void updateCustomer() {
+                String name = newNameInput.getText();
+                String surname = newSurnameInput.getText();
+                String id = newIDInput.getText();
+                String roomID = newRoomsComboBox.getSelectedItem().toString().split(" ")[0];
 
-    // Variables declaration - do not modify
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTextField jTextField10;
-    private javax.swing.JTextField jTextField7;
-    private javax.swing.JButton newCancelButton;
-    private javax.swing.JTextField newDateInput;
-    private javax.swing.JTextField newDurationInput;
-    private javax.swing.JTextField newIDInput;
-    private javax.swing.JTextField newNameInput;
-    private javax.swing.JButton newReserveButton;
-    private javax.swing.JTextField newRoomsComboBox;
-    private javax.swing.JTextField newSurnameInput;
-    private javax.swing.JButton oldCancelButton;
-    private javax.swing.JComboBox<String> oldCustomerComboBox;
-    private javax.swing.JTextField oldDateInput;
-    private javax.swing.JTextField oldDurationInput;
-    private javax.swing.JButton oldReserveButton;
-    private javax.swing.JComboBox<String> oldRoomsComboBox;
-    private javax.swing.JTextField oldSearchBar;
-    // End of variables declaration
+                try (BufferedReader br = new BufferedReader(new FileReader("Data/Customers.txt"))) {
+                        String line;
+                        boolean customerExists = false;
+                        while ((line = br.readLine()) != null) {
+                                String[] parts = line.split(" ");
+                                if (parts.length > 1) {
+                                        if (parts[0].equals(name) || parts[1].equals(surname) && parts[2].equals(id)) {
+                                                customerExists = true;
+                                                break;
+                                        }
+                                }
+                        }
+                        if (customerExists) {
+                                JOptionPane.showMessageDialog(null, "Customer already exists", "Error", JOptionPane.ERROR_MESSAGE);
+                        } else {
+                                try (PrintWriter writer = new PrintWriter(new FileWriter("Data/Customers.txt", true))) {
+                                        writer.println(name + " " + surname + " " + id + " " + roomID);
+                                        JOptionPane.showMessageDialog(null, "Customer added and reserved the room", "Success",
+                                                        JOptionPane.INFORMATION_MESSAGE);
+                                } catch (IOException e) {
+                                        e.printStackTrace();
+                                }
+                        }
+                } catch (IOException e) {
+                        e.printStackTrace();
+                }
+        }
+
+        // Variables declaration - do not modify
+        private javax.swing.JLabel jLabel1;
+        private javax.swing.JLabel jLabel10;
+        private javax.swing.JLabel jLabel2;
+        private javax.swing.JLabel jLabel3;
+        private javax.swing.JLabel jLabel4;
+        private javax.swing.JLabel jLabel5;
+        private javax.swing.JLabel jLabel6;
+        private javax.swing.JLabel jLabel7;
+        private javax.swing.JLabel jLabel8;
+        private javax.swing.JLabel jLabel9;
+        private javax.swing.JPanel jPanel1;
+        private javax.swing.JPanel jPanel2;
+        private javax.swing.JTabbedPane jTabbedPane1;
+        private javax.swing.JTextField jTextField10;
+        private javax.swing.JTextField jTextField7;
+        private javax.swing.JButton newCancelButton;
+        private javax.swing.JTextField newDateInput;
+        private javax.swing.JTextField newDurationInput;
+        private javax.swing.JTextField newIDInput;
+        private javax.swing.JTextField newNameInput;
+        private javax.swing.JButton newReserveButton;
+        private javax.swing.JComboBox<String> newRoomsComboBox;
+        private javax.swing.JTextField newSurnameInput;
+        private javax.swing.JButton oldCancelButton;
+        private javax.swing.JComboBox<String> oldCustomerComboBox;
+        private javax.swing.JTextField oldDateInput;
+        private javax.swing.JTextField oldDurationInput;
+        private javax.swing.JButton oldReserveButton;
+        private javax.swing.JComboBox<String> oldRoomsComboBox;
+        private javax.swing.JTextField oldSearchBar;
+        // End of variables declaration
 }

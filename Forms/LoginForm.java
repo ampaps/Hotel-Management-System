@@ -187,7 +187,7 @@ public class LoginForm extends JFrame {
         });
     }
 
-    private void centerFrame(JFrame fr) {
+    static public void centerFrame(JFrame fr) {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         int w = fr.getSize().width;
         int h = fr.getSize().height;
