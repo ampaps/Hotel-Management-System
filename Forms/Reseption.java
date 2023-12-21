@@ -363,6 +363,12 @@ public class Reseption extends javax.swing.JFrame {
         }
     }
 
+    // if the time of the reservation is passed, the room is set to avaible
+    // automatically
+    private void checkRoomStatus() {
+
+    }
+
     // Variables declaration - do not modify
     private javax.swing.JButton CheckReservationButton;
     private javax.swing.JButton adminButton;

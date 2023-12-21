@@ -6,6 +6,16 @@ package Forms;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JComboBox;
 
 /**
  *
@@ -60,6 +70,9 @@ public class ReservationForm extends javax.swing.JFrame {
         newReserveButton = new javax.swing.JButton();
         newCancelButton = new javax.swing.JButton();
 
+        showCustomerNames();
+        showRoomsForComboBox(oldRoomsComboBox);
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Make Reservation");
 
@@ -73,16 +86,16 @@ public class ReservationForm extends javax.swing.JFrame {
         jLabel3.setText("DURATION :");
 
         oldReserveButton.setText("RESERVE");
-        oldReserveButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                // oldReserveButtonActionPerformed(evt);
+        oldReserveButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                oldReserveButtonActionPerformed(evt);
             }
         });
 
         oldCancelButton.setText("CANCEL");
-        oldCancelButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                // oldCancelButtonActionPerformed(evt);
+        oldCancelButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                dispose();
             }
         });
 
@@ -184,20 +197,8 @@ public class ReservationForm extends javax.swing.JFrame {
         jLabel10.setText("write the date as follow 2023-12-19");
 
         newReserveButton.setText("RESERVE");
-        newReserveButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newReserveButtonActionPerformed(evt);
-            }
-        });
 
         newCancelButton.setText("CANCEL");
-        newCancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                // newCancelButtonActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -316,7 +317,8 @@ public class ReservationForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>
 
-    protected void newReserveButtonActionPerformed(ActionEvent evt) {
+    private void oldReserveButtonActionPerformed(ActionEvent evt) {
+
     }
 
     /**
@@ -360,6 +362,79 @@ public class ReservationForm extends javax.swing.JFrame {
                 new ReservationForm().setVisible(true);
             }
         });
+    }
+
+    private void showCustomerNames() {
+        String searchText = oldSearchBar.getText();
+        oldCustomerComboBox.removeAllItems();
+        try (BufferedReader br = new BufferedReader(new FileReader("Data/Customers.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(" ");
+                if (parts.length > 1 && parts[3].equals("0")) {
+                    if (line.contains(searchText)) {
+                        oldCustomerComboBox.addItem(line);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showRoomsForComboBox(JComboBox<String> JComboBoxRooms) {
+        try (BufferedReader br = new BufferedReader(new FileReader("Data/Rooms.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(" ");
+                if (parts.length > 1) {
+                    String roomNumber = parts[0];
+                    String roomType = parts[1];
+                    String roomPrice = parts[2];
+                    String roomStatus = parts[3];
+
+                    if (roomStatus.equals("0")) {
+                        JComboBoxRooms.addItem(roomNumber + " " + roomType);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateRoomStatus() {
+        String temp = (String) oldRoomsComboBox.getSelectedItem();
+        String selectedRoomNumber = temp.split(" ")[0];
+
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader("Data/Rooms.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(" ");
+                if (parts.length > 1) {
+                    if (parts[0].equals(selectedRoomNumber)) {
+                        parts[3] = "0";
+                        String duration = oldDurationInput.getText();
+                        parts[4] = LocalDate.now().toString();
+                        parts[5] = LocalDate.now().plusDays(Integer.parseInt(duration)).toString();
+
+                        line = String.join(" ", parts);
+                    }
+                }
+                lines.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try (PrintWriter writer = new PrintWriter(new FileWriter("Data/Rooms.txt"))) {
+            for (String line : lines) {
+                writer.println(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // Variables declaration - do not modify
