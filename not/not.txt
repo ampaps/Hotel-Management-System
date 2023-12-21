@@ -1,11 +1,5 @@
+customer : 
+    name surname id RoomID resrvedRoom (if it's 0 then there is no reservation in that name )
 
-checkIn i yap,
-reservation icin tarih ekle ve insanlar buna gore chcekIn yapabilsinler,
-make resrvation,
-cancel reservation,
-check reservation,
-check out,
-
-after : 
-    rooms u ve avaible rooms u daha estetik yap,
-    
+Rooms : 
+    roomID roomType roomPRice roomavaiblity
