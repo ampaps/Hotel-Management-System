@@ -42,6 +42,8 @@ public class CheckInForm extends javax.swing.JFrame {
             }
         });
         this.setTitle("Check In");
+        // this.setSize(300,300);
+        this.setResizable(false);
     }
 
     /**
@@ -77,12 +79,12 @@ public class CheckInForm extends javax.swing.JFrame {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
-                    String itemData = (String) rNamesBox.getSelectedItem();
-                    String roomID = itemData.split(" ")[0];
-                    // Update rDurationField based on the selected room.
-                    // This is just an example. Replace it with your actual code.
-                    String dates[] = getDates(roomID);
-                    rDurationField.setText(dates[0] + " " + dates[1]);
+
+                    String roomID = getNumber();
+                    String duration = getDuration();
+
+                    rDurationField.setText(duration);
+                    rRoomField.setText(roomID);
                 }
             }
         });
@@ -112,12 +114,12 @@ public class CheckInForm extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel1.setText("ROOM :");
 
         rRoomField.setEditable(false);
 
-        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel4.setText("DURATION :");
 
         rDurationField.setEditable(false);
@@ -298,6 +300,10 @@ public class CheckInForm extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>
+
+    // private String getRoomID() {
+    //
+    // }
 
     protected void oldCheckInButtonActionPerformed(ActionEvent e) {
         boolean roomUpdated = updateRoom();
@@ -494,41 +500,64 @@ public class CheckInForm extends javax.swing.JFrame {
     }
 
     // data is the roomID
-    private String[] getDates(String roomID) {
+    // private String[] getDates(String roomID) {
+    // try (BufferedReader br = new BufferedReader(new
+    // FileReader("Data/Reservations.txt"))) {
+    // String line;
+    // while ((line = br.readLine()) != null) {
+    // String[] parts = line.split(" ");
+    // if (parts.length > 2) {
+    // if (parts[3].equals(roomID)) {
+    // String dates[] = new String[2];
+    // dates[0] = parts[4];
+    // dates[1] = parts[5];
+    // }
+    // }
+    // }
+    // } catch (IOException e) {
+    // e.printStackTrace();
+    // }
+
+    // return new String[] { "", "" };
+    // }
+
+    private String getDuration() {
+
         try (BufferedReader br = new BufferedReader(new FileReader("Data/Reservations.txt"))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(" ");
-                if (parts.length > 2) {
-                    if (parts[3].equals(roomID)) {
-                        String dates[] = new String[2];
-                        dates[0] = parts[4];
-                        dates[1] = parts[5];
+                if (parts.length > 1) {
+                    String name = parts[0];
+                    String surname = parts[1];
+                    String id = parts[2];
+                    if (rNamesBox.getSelectedItem().equals(name + " " + surname + " " + id)) {
+                        return parts[4];
                     }
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        return new String[] { "", "" };
+        return null;
     }
 
-    private int getNumber() {
+    // returns the room number
+    private String getNumber() {
         try (BufferedReader br = new BufferedReader(new FileReader("Data/Reservations.txt"))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(" ");
                 if (parts.length > 1) {
                     if (rNamesBox.getSelectedItem().equals(parts[0] + " " + parts[1] + " " + parts[2])) {
-                        return Integer.parseInt(parts[3]);
+                        return parts[3];
                     }
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return (Integer) null;
+        return null;
     }
 
     private void showOldCustomers() {

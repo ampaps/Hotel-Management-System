@@ -326,8 +326,8 @@ public class NewCustomer extends javax.swing.JFrame {
                 String[] parts = line.split(" ");
                 if (parts.length > 2) {
                     if (parts[3].equals(roomNumber)) {
-                        LocalDate startDate = LocalDate.parse(parts[4]);
-                        LocalDate endDate = LocalDate.parse(parts[5]);
+                        LocalDate startDate = LocalDate.parse(parts[5]);
+                        LocalDate endDate = LocalDate.parse(parts[6]);
                         if ((now.isEqual(startDate) || now.isAfter(startDate))
                                 && (now.isEqual(endDate) || now.isBefore(endDate))) {
                             return false;

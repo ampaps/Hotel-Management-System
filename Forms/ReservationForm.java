@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.swing.JComboBox;
@@ -25,6 +26,7 @@ import javax.swing.JTextField;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import javax.swing.JComboBox;
 
 /**
  *
@@ -374,6 +376,7 @@ public class ReservationForm extends javax.swing.JFrame {
         LocalDate[] dates = getDates(newDateInput, newDurationInput);
         String customerData = getCustomerData(newNameInput, newSurnameInput, newIDInput);
         String roomData = getRoomData(newRoomsComboBox);
+        String duration = getDurationOfStay(newDurationInput);
 
         String[] customerParts = customerData.split(" ");
         String[] roomParts = roomData.split(" ");
@@ -400,7 +403,8 @@ public class ReservationForm extends javax.swing.JFrame {
 }
 
         try (PrintWriter pw = new PrintWriter(new FileWriter("Data/Reservations.txt", true))) {
-            pw.println(customerName + " " + customerSurname + " " + customerID + " " + roomNumber + " " + dates[0]
+                //add the duration to the reservation.txt file 
+            pw.println(customerName + " " + customerSurname + " " + customerID + " " + roomNumber + " " + duration + " " +dates[0]
                     + " " + dates[1]);
                     updateCustomer();
                     JOptionPane.showMessageDialog(null, "Room reserved and new customer added",roomNumber, JOptionPane.INFORMATION_MESSAGE);
@@ -453,23 +457,34 @@ private void oldReserveButtonActionPerformed(ActionEvent evt) {
 }
 
         private void showCustomerNames() {
-                String searchText = oldSearchBar.getText();
-                oldCustomerComboBox.removeAllItems();
-                try (BufferedReader br = new BufferedReader(new FileReader("Data/Customers.txt"))) {
-                        String line;
-                        while ((line = br.readLine()) != null) {
-                                String[] parts = line.split(" ");
-                                if (parts.length > 1 && parts[3].equals("0")) {
-                                        if (line.contains(searchText)) {
-                                                oldCustomerComboBox.addItem(line);
-                                        }
-                                }
-                        }
-                } catch (Exception e) {
-                        e.printStackTrace();
-                }
+    String searchText = oldSearchBar.getText();
+    oldCustomerComboBox.removeAllItems();
+    try (BufferedReader br = new BufferedReader(new FileReader("Data/Customers.txt"))) {
+        // Read all reservations into a HashSet
+        HashSet<String> reservedCustomers = new HashSet<>();
+        try (BufferedReader br2 = new BufferedReader(new FileReader("Data/Reservations.txt"))) {
+            String line2;
+            while ((line2 = br2.readLine()) != null) {
+                String[] parts2 = line2.split(" ");
+                reservedCustomers.add(parts2[2]); // Assuming parts2[2] is the customer ID
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(" ");
+            if (parts.length > 1 && parts[3].equals("0")) {
+                if (line.contains(searchText) && !reservedCustomers.contains(parts[2])) { // Check if customer is in the HashSet
+                    oldCustomerComboBox.addItem(parts[0]);
+                }
+            }
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
         private void showRoomsForComboBox(JComboBox<String> JComboBoxRooms) {
                 try (BufferedReader br = new BufferedReader(new FileReader("Data/Rooms.txt"))) {
                         try (BufferedReader br2 = new BufferedReader(new FileReader("Data/Reservations.txt"))) {
@@ -538,10 +553,16 @@ private void oldReserveButtonActionPerformed(ActionEvent evt) {
                 return roomData;
         }
 
+        private String getDurationOfStay(JTextField durationInput) {
+                String duration = durationInput.getText();
+                return duration;
+        }
+
         private void oldReserveRoom() {
                 LocalDate[] dates = getDates(oldDateInput, oldDurationInput);
                 String customerData = getCustomerData();
                 String roomData = getRoomData(oldRoomsComboBox);
+                String duration = getDurationOfStay(oldDurationInput);
 
                 String[] customerParts = customerData.split(" ");
                 String[] roomParts = roomData.split(" ");
@@ -569,7 +590,7 @@ private void oldReserveButtonActionPerformed(ActionEvent evt) {
                 }
 
                 try (PrintWriter pw = new PrintWriter(new FileWriter("Data/Reservations.txt", true))) {
-                        pw.println(customerName + " " + customerSurname + " " + customerID + " " + roomNumber + " " + dates[0]
+                        pw.println(customerName + " " + customerSurname + " " + customerID + " " + roomNumber + " " + duration + " " + dates[0]
                                         + " " + dates[1]);
                         JOptionPane.showMessageDialog(null, "Room reserved successfully", roomNumber, JOptionPane.INFORMATION_MESSAGE);
                         dispose();
@@ -600,7 +621,8 @@ private void oldReserveButtonActionPerformed(ActionEvent evt) {
                                 JOptionPane.showMessageDialog(null, "Customer already exists", "Error", JOptionPane.ERROR_MESSAGE);
                         } else {
                                 try (PrintWriter writer = new PrintWriter(new FileWriter("Data/Customers.txt", true))) {
-                                        writer.println(name + " " + surname + " " + id + " " + roomID);
+                                        //write 0 for the id becaues the room is being reserved
+                                        writer.println(name + " " + surname + " " + id + " " + "0");
                                         JOptionPane.showMessageDialog(null, "Customer added and reserved the room", "Success",
                                                         JOptionPane.INFORMATION_MESSAGE);
                                 } catch (IOException e) {
