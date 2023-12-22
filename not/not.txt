@@ -1,5 +1,0 @@
-customer : 
-    name surname id RoomID resrvedRoom (if it's 0 then there is no reservation in that name )
-
-Rooms : 
-    roomID roomType roomPRice roomavaiblity
