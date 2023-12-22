@@ -27,6 +27,7 @@ import javax.swing.JTextField;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -466,7 +467,7 @@ private void oldReserveButtonActionPerformed(ActionEvent evt) {
             String line2;
             while ((line2 = br2.readLine()) != null) {
                 String[] parts2 = line2.split(" ");
-                reservedCustomers.add(parts2[2]); // Assuming parts2[2] is the customer ID
+                reservedCustomers.add(parts2[2]); 
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -477,7 +478,7 @@ private void oldReserveButtonActionPerformed(ActionEvent evt) {
             String[] parts = line.split(" ");
             if (parts.length > 1 && parts[3].equals("0")) {
                 if (line.contains(searchText) && !reservedCustomers.contains(parts[2])) { // Check if customer is in the HashSet
-                    oldCustomerComboBox.addItem(parts[0]);
+                    oldCustomerComboBox.addItem(parts[0] + " " + parts[1] + " " + parts[2]);
                 }
             }
         }

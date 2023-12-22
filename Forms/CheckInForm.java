@@ -16,7 +16,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.swing.JComboBox;
@@ -306,35 +308,40 @@ public class CheckInForm extends javax.swing.JFrame {
     // }
 
     protected void oldCheckInButtonActionPerformed(ActionEvent e) {
-        boolean roomUpdated = updateRoom();
-        if (!roomUpdated) {
-            JOptionPane.showMessageDialog(this, "Failed to update room.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+        if (checkAvaibilityForDate()) {
 
-        String temp = (String) oldRoomBox.getSelectedItem();
-        String selectedRoomNumber = temp.split(" ")[0];
-        String customerID = getCustomerId();
-        boolean customerUpdated = updateCustomer(customerID, selectedRoomNumber);
-        if (!customerUpdated) {
-            JOptionPane.showMessageDialog(this, "Failed to update customer.", "Error", JOptionPane.ERROR_MESSAGE);
-
-            return;
-        }
-
-        if (customerUpdated && roomUpdated) {
-            JOptionPane.showMessageDialog(this, "Successfully checked in.", "Success",
-                    JOptionPane.INFORMATION_MESSAGE);
-            try {
-                Thread.sleep(500);
-            } catch (Exception ex) {
-                ex.printStackTrace();
+            boolean roomUpdated = updateRoom();
+            if (!roomUpdated) {
+                JOptionPane.showMessageDialog(this, "Failed to update room.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
             }
-            String price = getPrice();
-            JOptionPane.showMessageDialog(this, "price for the room : " + price, "price",
-                    JOptionPane.INFORMATION_MESSAGE);
-            dispose();
 
+            String temp = (String) oldRoomBox.getSelectedItem();
+            String selectedRoomNumber = temp.split(" ")[0];
+            String customerID = getCustomerId();
+            boolean customerUpdated = updateCustomer(customerID, selectedRoomNumber);
+            if (!customerUpdated) {
+                JOptionPane.showMessageDialog(this, "Failed to update customer.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (customerUpdated && roomUpdated) {
+                JOptionPane.showMessageDialog(this, "Successfully checked in.", "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
+                try {
+                    Thread.sleep(500);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                String price = getPrice();
+                JOptionPane.showMessageDialog(this, "price for the room : " + price, "price",
+                        JOptionPane.INFORMATION_MESSAGE);
+                dispose();
+
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Room is not available for this date.", "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -399,14 +406,14 @@ public class CheckInForm extends javax.swing.JFrame {
     private boolean updateCustomer(String customerID, String newRoomID) {
         List<String> lines = new ArrayList<>();
 
-        try (BufferedReader reader = new BufferedReader(new FileReader("Data/Customers.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("Data/Customers.txt"))) {
             String line;
-            while ((line = reader.readLine()) != null) {
+            while ((line = br.readLine()) != null) {
                 String[] parts = line.split(" ");
-                if (parts.length > 2) {
+                if (parts.length > 3) {
                     if (parts[2].equals(customerID)) {
                         parts[3] = newRoomID; // Change the room ID
-                        line = String.join(" ", parts);
+                        line = String.join(" ", parts); // Update the line with the new room ID
                     }
                 }
                 lines.add(line);
@@ -426,8 +433,86 @@ public class CheckInForm extends javax.swing.JFrame {
         return false;
     }
 
-    private void rCheckInbuttonActionPerformed(ActionEvent e) {
+    private boolean CheckReservationInName() {
+        try (BufferedReader br = new BufferedReader(new FileReader("Data/Reservations.txt"))) {
+            String line;
+            String temp = (String) rNamesBox.getSelectedItem();
+            String customerID = temp.split(" ")[2];
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(" ");
+                if (parts.length > 2) {
+                    if (parts[2].equals(customerID)) {
+                        return true;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
+    private void rCheckInbuttonActionPerformed(ActionEvent e) {
+        if (CheckReservationInName()) {
+            boolean roomUpdated = updateRoom();
+            if (!roomUpdated) {
+                JOptionPane.showMessageDialog(this, "Failed to update room.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            String temp = (String) rNamesBox.getSelectedItem();
+            String customerID = temp.split(" ")[2];
+            String roomID = rRoomField.getText();
+            boolean customerUpdated = updateCustomer(customerID, roomID);
+            if (!customerUpdated) {
+                JOptionPane.showMessageDialog(this, "Failed to update customer.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (customerUpdated && roomUpdated) {
+                JOptionPane.showMessageDialog(this, "Successfully checked in.", "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
+                try {
+                    Thread.sleep(500);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                String price = getPrice();
+                JOptionPane.showMessageDialog(this, "price for the room : " + price, "price",
+                        JOptionPane.INFORMATION_MESSAGE);
+                removeReservation(customerID);
+                dispose();
+
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "?", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // customerId is the same as the customerID in the reservations.txt file
+    public static void removeReservation(String customerID) {
+        List<String> lines = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("Data/Reservations.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(" ");
+                if (parts.length > 1 && !parts[2].equals(customerID)) {
+                    lines.add(line);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try (PrintWriter writer = new PrintWriter(new FileWriter("Data/Reservations.txt"))) {
+            for (String line : lines) {
+                writer.println(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // private
@@ -560,13 +645,46 @@ public class CheckInForm extends javax.swing.JFrame {
         return null;
     }
 
+    // private void showOldCustomers() {
+    // try (BufferedReader br = new BufferedReader(new
+    // FileReader("Data/Customers.txt"))) {
+    // String line;
+    // while ((line = br.readLine()) != null) {
+    // String[] parts = line.split(" ");
+    // if (parts.length > 1) {
+    // if (oldSearchField.getText().isEmpty() ||
+    // parts[0].equals(oldSearchField.getText())) {
+    // oldNamesBox.addItem(parts[0] + " " + parts[1] + " " + parts[2]);
+    // }
+    // }
+    // }
+    // } catch (IOException e) {
+    // e.printStackTrace();
+    // }
+    // }
+
     private void showOldCustomers() {
+        String searchText = oldSearchField.getText();
+        oldNamesBox.removeAllItems();
         try (BufferedReader br = new BufferedReader(new FileReader("Data/Customers.txt"))) {
+            // Read all reservations into a HashSet
+            HashSet<String> reservedCustomers = new HashSet<>();
+            try (BufferedReader br2 = new BufferedReader(new FileReader("Data/Reservations.txt"))) {
+                String line2;
+                while ((line2 = br2.readLine()) != null) {
+                    String[] parts2 = line2.split(" ");
+                    reservedCustomers.add(parts2[2]); // Assuming parts2[2] is the customer ID
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(" ");
-                if (parts.length > 1) {
-                    if (oldSearchField.getText().isEmpty() || parts[0].equals(oldSearchField.getText())) {
+                if (parts.length > 1 && parts[3].equals("0")) {
+                    if (line.contains(searchText) && !reservedCustomers.contains(parts[2])) { // Check if customer is in
+                                                                                              // the HashSet
                         oldNamesBox.addItem(parts[0] + " " + parts[1] + " " + parts[2]);
                     }
                 }
@@ -594,6 +712,33 @@ public class CheckInForm extends javax.swing.JFrame {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean checkAvaibilityForDate() {
+        String temp = (String) oldRoomBox.getSelectedItem();
+        String roomNumber = temp.split(" ")[0];
+        LocalDate now = LocalDate.now();
+
+        try (BufferedReader br = new BufferedReader(new FileReader("Data/Reservations.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(" ");
+                if (parts.length > 2) {
+                    if (parts[3].equals(roomNumber)) {
+                        LocalDate startDate = LocalDate.parse(parts[5]);
+                        LocalDate endDate = LocalDate.parse(parts[6]);
+                        if ((now.isEqual(startDate) || now.isAfter(startDate))
+                                && (now.isEqual(endDate) || now.isBefore(endDate))) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return true;
     }
 
     // Variables declaration - do not modify

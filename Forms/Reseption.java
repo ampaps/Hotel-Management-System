@@ -8,6 +8,7 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -275,7 +276,11 @@ public class Reseption extends javax.swing.JFrame {
     }
 
     private void cancelReservationButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        CancelReservationForm cancelReservationForm = new CancelReservationForm();
+        cancelReservationForm.setVisible(true);
+        cancelReservationForm.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        centerFrame(cancelReservationForm);
+        dispose();
     }
 
     private void roomsButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -297,7 +302,31 @@ public class Reseption extends javax.swing.JFrame {
     }
 
     private void CheckReservationButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        showReservations();
+    }
+
+    private void showReservations() {
+        StringBuilder reservations = new StringBuilder();
+        try (BufferedReader br = new BufferedReader(new FileReader("Data/Reservations.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(" ");
+                if (parts.length > 1) {
+                    reservations.append("").append(parts[0]).append("  ").append(parts[1])
+                            .append("    customer Id : ").append(parts[2]).append("     Reserved Room : ")
+                            .append(parts[3]).append("\n");
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        File file = new File("Data/Reservations.txt");
+        if (file.length() == 0) {
+            reservations.append("No reservations");
+        }
+
+        JOptionPane.showMessageDialog(null, reservations.toString(), "Reservations", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void makeReservationButtonActionPerformed(java.awt.event.ActionEvent evt) {

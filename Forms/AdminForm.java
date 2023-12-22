@@ -170,8 +170,12 @@ public class AdminForm extends javax.swing.JFrame {
         Object[] message = { "Select the room you want to remove", JComboBoxRooms };
         int option = JOptionPane.showConfirmDialog(null, message, "Remove Room", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
-            String selectedRoom = (String) JComboBoxRooms.getSelectedItem();
-            removeRoomFromFile(selectedRoom);
+            int confirmOption = JOptionPane.showConfirmDialog(null, "Are you sure you want to remove this room?",
+                    "Confirm Removal", JOptionPane.YES_NO_OPTION);
+            if (confirmOption == JOptionPane.YES_OPTION) {
+                String selectedRoom = (String) JComboBoxRooms.getSelectedItem();
+                removeRoomFromFile(selectedRoom);
+            }
         }
     }
 
@@ -211,8 +215,12 @@ public class AdminForm extends javax.swing.JFrame {
         Object[] message = { "Select the user you want to remove", JComboBoxUsers };
         int option = JOptionPane.showConfirmDialog(null, message, "Remove User", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
-            String selectedUser = (String) JComboBoxUsers.getSelectedItem();
-            removeUserFromFile(selectedUser);
+            int confirmOption = JOptionPane.showConfirmDialog(null, "Are you sure you want to remove this user?",
+                    "Confirm Removal", JOptionPane.YES_NO_OPTION);
+            if (confirmOption == JOptionPane.YES_OPTION) {
+                String selectedUser = (String) JComboBoxUsers.getSelectedItem();
+                removeUserFromFile(selectedUser);
+            }
         }
     }
 
