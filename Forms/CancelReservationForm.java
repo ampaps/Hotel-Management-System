@@ -27,7 +27,6 @@ import java.util.ArrayList; // Add this import statement
 public class CancelReservationForm extends javax.swing.JFrame {
 
     private String getRoomID() {
-
         try (BufferedReader br = new BufferedReader(new FileReader("Data/Reservations.txt"))) {
             String line;
             String customerID = ((String) namesBox.getSelectedItem()).split(" ")[2];
@@ -77,6 +76,7 @@ public class CancelReservationForm extends javax.swing.JFrame {
         showNamesWithReservation();
 
         namesBox.addItemListener(new ItemListener() {
+            @Override
             public void itemStateChanged(java.awt.event.ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
 

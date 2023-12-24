@@ -1,4 +1,4 @@
-1 singleB 1500 0 
+1 singleB 1500 0
 2 doubleB 2500 0
 3 singleB 1500 0
 4 doubleB 2500 0
