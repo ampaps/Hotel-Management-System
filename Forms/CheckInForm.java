@@ -673,7 +673,9 @@ public class CheckInForm extends javax.swing.JFrame {
                 String line2;
                 while ((line2 = br2.readLine()) != null) {
                     String[] parts2 = line2.split(" ");
-                    reservedCustomers.add(parts2[2]); // Assuming parts2[2] is the customer ID
+                    if (parts2.length > 2) {
+                        reservedCustomers.add(parts2[2]); // Assuming parts2[2] is the customer ID
+                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -682,9 +684,8 @@ public class CheckInForm extends javax.swing.JFrame {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(" ");
-                if (parts.length > 1 && parts[3].equals("0")) {
-                    if (line.contains(searchText) && !reservedCustomers.contains(parts[2])) { // Check if customer is in
-                                                                                              // the HashSet
+                if (parts.length > 2 && parts.length > 3 && parts[3].equals("0")) {
+                    if (line.contains(searchText) && !reservedCustomers.contains(parts[2])) { // Check if customer is in the HashSet
                         oldNamesBox.addItem(parts[0] + " " + parts[1] + " " + parts[2]);
                     }
                 }
