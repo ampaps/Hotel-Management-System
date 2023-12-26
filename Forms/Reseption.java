@@ -1,8 +1,10 @@
 package Forms;
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ */
 
-import java.awt.Button;
 import java.awt.Dimension;
-import java.awt.Label;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -12,18 +14,16 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import java.awt.Label;
-import javax.swing.JButton;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
+import Forms.AdminForm;
+import Forms.CancelReservationForm;
+import Forms.CheckInForm;
+import Forms.CheckOutForm;
+import Forms.ContentPanel;
+import Forms.NewCustomer;
+import Forms.ReservationForm;
 
 /**
  *
@@ -32,11 +32,10 @@ import javax.swing.JButton;
 public class Reseption extends javax.swing.JFrame {
 
     /**
-     * Creates new form Reservation
+     * Creates new form Reseption
      */
     public Reseption() {
         initComponents();
-        this.setResizable(false);
     }
 
     /**
@@ -51,25 +50,34 @@ public class Reseption extends javax.swing.JFrame {
         String photoPath = "Images/receptionPhoto1.jpg";
 
         reseptionButtonPanel = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
         newCustomerButton = new javax.swing.JButton();
         checkInButton = new javax.swing.JButton();
-        avaibleRoomsButton = new javax.swing.JButton();
-        cancelReservationButton = new javax.swing.JButton();
-        roomsButton = new javax.swing.JButton();
-        CheckReservationButton = new javax.swing.JButton();
-        makeReservationButton = new javax.swing.JButton();
         checkOutButton = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
+        makeReservationButton = new javax.swing.JButton();
+        cancelReservationButton = new javax.swing.JButton();
+        CheckReservationButton = new javax.swing.JButton();
+        roomsButton = new javax.swing.JButton();
+        avaibleRoomsButton = new javax.swing.JButton();
         logoutButton = new javax.swing.JButton();
         adminButton = new javax.swing.JButton();
+        jButton12 = new javax.swing.JButton();
+        jButton13 = new javax.swing.JButton();
+        jButton14 = new javax.swing.JButton();
         reseptionPhotoPanel = new ContentPanel(photoPath);
 
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         reseptionButtonPanel.setBackground(new java.awt.Color(0, 0, 0));
 
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("RESEPTION");
+        jButton4.setText("Customers");
+        jButton4.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                showCustomers(e);
+            }
+        });
 
         newCustomerButton.setText("New Customer");
         newCustomerButton.addActionListener(new ActionListener() {
@@ -155,105 +163,116 @@ public class Reseption extends javax.swing.JFrame {
 
         });
 
+        jButton12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton12ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout reseptionButtonPanelLayout = new javax.swing.GroupLayout(reseptionButtonPanel);
         reseptionButtonPanel.setLayout(reseptionButtonPanelLayout);
         reseptionButtonPanelLayout.setHorizontalGroup(
                 reseptionButtonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(reseptionButtonPanelLayout.createSequentialGroup()
-                                .addContainerGap()
+                                .addGap(15, 15, 15)
                                 .addGroup(reseptionButtonPanelLayout
                                         .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(newCustomerButton, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(checkInButton, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(avaibleRoomsButton, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(cancelReservationButton,
-                                                javax.swing.GroupLayout.Alignment.TRAILING,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
-                                        .addComponent(roomsButton, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(CheckReservationButton, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(makeReservationButton, javax.swing.GroupLayout.Alignment.TRAILING,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(checkOutButton, javax.swing.GroupLayout.Alignment.TRAILING,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(logoutButton, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(adminButton, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addContainerGap()));
+                                        .addComponent(logoutButton, javax.swing.GroupLayout.PREFERRED_SIZE, 210,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(adminButton, javax.swing.GroupLayout.PREFERRED_SIZE, 210,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(newCustomerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 210,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(checkInButton, javax.swing.GroupLayout.PREFERRED_SIZE, 210,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(checkOutButton, javax.swing.GroupLayout.PREFERRED_SIZE, 210,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 210,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(makeReservationButton, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(cancelReservationButton, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(CheckReservationButton, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(roomsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 210,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(avaibleRoomsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 210,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 210,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jButton13, javax.swing.GroupLayout.PREFERRED_SIZE, 210,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jButton14, javax.swing.GroupLayout.PREFERRED_SIZE, 210,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap(15, Short.MAX_VALUE)));
         reseptionButtonPanelLayout.setVerticalGroup(
                 reseptionButtonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(reseptionButtonPanelLayout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(newCustomerButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(newCustomerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 42,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(checkInButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(checkInButton, javax.swing.GroupLayout.PREFERRED_SIZE, 42,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(checkOutButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(roomsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 42,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jButton4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(avaibleRoomsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 42,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(makeReservationButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(makeReservationButton, javax.swing.GroupLayout.PREFERRED_SIZE, 42,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(cancelReservationButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cancelReservationButton, javax.swing.GroupLayout.PREFERRED_SIZE, 42,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(CheckReservationButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(CheckReservationButton, javax.swing.GroupLayout.PREFERRED_SIZE, 42,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(roomsButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(checkOutButton, javax.swing.GroupLayout.PREFERRED_SIZE, 42,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 184,
+                                .addComponent(avaibleRoomsButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton12)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton13)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton14)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 322,
                                         Short.MAX_VALUE)
                                 .addComponent(adminButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(logoutButton)
-                                .addContainerGap()));
+                                .addGap(16, 16, 16)));
+
+        getContentPane().add(reseptionButtonPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 240, 690));
 
         javax.swing.GroupLayout reseptionPhotoPanelLayout = new javax.swing.GroupLayout(reseptionPhotoPanel);
         reseptionPhotoPanel.setLayout(reseptionPhotoPanelLayout);
         reseptionPhotoPanelLayout.setHorizontalGroup(
                 reseptionPhotoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 662, Short.MAX_VALUE));
+                        .addGap(0, 610, Short.MAX_VALUE));
         reseptionPhotoPanelLayout.setVerticalGroup(
                 reseptionPhotoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 0, Short.MAX_VALUE));
+                        .addGap(0, 690, Short.MAX_VALUE));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addComponent(reseptionButtonPanel, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(reseptionPhotoPanel, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
-        layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(reseptionButtonPanel, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(reseptionPhotoPanel, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
+        getContentPane().add(reseptionPhotoPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(216, 0, 610, 690));
 
         pack();
     }// </editor-fold>
+
+    protected void showCustomers(ActionEvent e) {
+        StringBuilder customers = new StringBuilder();
+        try (BufferedReader br = new BufferedReader(new FileReader("Data/Customers.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(" ");
+                if (parts.length > 1) {
+                    customers.append("").append(parts[0]).append("  ").append(parts[1])
+                            .append("    customer Id : ").append(parts[2]).append("\n");
+                }
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+        JOptionPane.showMessageDialog(null, customers.toString(), "Customers", JOptionPane.INFORMATION_MESSAGE);
+    }
 
     private void avaibleRoomsButtonActionPerformed(java.awt.event.ActionEvent evt) {
         StringBuilder rooms = new StringBuilder();
@@ -344,6 +363,10 @@ public class Reseption extends javax.swing.JFrame {
         centerFrame(checkOutForm);
     }
 
+    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -380,7 +403,10 @@ public class Reseption extends javax.swing.JFrame {
             public void run() {
                 Reseption reseption = new Reseption();
                 reseption.setVisible(true);
+                reseption.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                reseption.setResizable(false);
                 reseption.centerFrame(reseption);
+
             }
         });
     }
@@ -424,7 +450,10 @@ public class Reseption extends javax.swing.JFrame {
     private javax.swing.JButton cancelReservationButton;
     private javax.swing.JButton checkInButton;
     private javax.swing.JButton checkOutButton;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton jButton12;
+    private javax.swing.JButton jButton13;
+    private javax.swing.JButton jButton14;
+    private javax.swing.JButton jButton4;
     private javax.swing.JButton logoutButton;
     private javax.swing.JButton makeReservationButton;
     private javax.swing.JButton newCustomerButton;
