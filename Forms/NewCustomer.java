@@ -396,7 +396,8 @@ public class NewCustomer extends javax.swing.JFrame {
             } else {
                 try (PrintWriter writer = new PrintWriter(new FileWriter("Data/Customers.txt", true))) {
                     if (checkAvaibilityForDate()) {
-                        writer.println(name + " " + surname + " " + id + " " + roomID);
+                        writer.println(name + " " + surname + " " + id + " " + roomID + " " + LocalDate.now() + " "
+                                + LocalDate.now().plusDays(Integer.parseInt(jTextField1.getText())));
                         updateRoomStatus();
                         openReseption();
                     } else {
