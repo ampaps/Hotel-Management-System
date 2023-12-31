@@ -77,6 +77,13 @@ public class CheckInForm extends javax.swing.JFrame {
         oldCheckInButton = new javax.swing.JButton();
         oldCancelButton = new javax.swing.JButton();
 
+        oldSearchField.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showOldCustomers();
+            }
+        });
+
         rNamesBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
@@ -88,6 +95,13 @@ public class CheckInForm extends javax.swing.JFrame {
                     rDurationField.setText(duration);
                     rRoomField.setText(roomID);
                 }
+            }
+        });
+
+        rSearchField.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showReservations();
             }
         });
 
@@ -413,6 +427,8 @@ public class CheckInForm extends javax.swing.JFrame {
                 if (parts.length > 3) {
                     if (parts[2].equals(customerID)) {
                         parts[3] = newRoomID; // Change the room ID
+                        parts[4] = LocalDate.now().toString();
+                        parts[5] = "0";
                         line = String.join(" ", parts); // Update the line with the new room ID
                     }
                 }
@@ -685,7 +701,8 @@ public class CheckInForm extends javax.swing.JFrame {
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(" ");
                 if (parts.length > 2 && parts.length > 3 && parts[3].equals("0")) {
-                    if (line.contains(searchText) && !reservedCustomers.contains(parts[2])) { // Check if customer is in the HashSet
+                    if (line.contains(searchText) && !reservedCustomers.contains(parts[2])) { // Check if customer is in
+                                                                                              // the HashSet
                         oldNamesBox.addItem(parts[0] + " " + parts[1] + " " + parts[2]);
                     }
                 }

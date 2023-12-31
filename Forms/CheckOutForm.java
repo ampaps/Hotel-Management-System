@@ -58,6 +58,13 @@ public class CheckOutForm extends javax.swing.JFrame {
 
         showCustomerNames();
 
+        searchCustomerName.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                searchCustomerNameActionPerformed(e);
+            }
+        });
+
         searchCustomerName.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(javax.swing.event.DocumentEvent e) {
@@ -79,7 +86,9 @@ public class CheckOutForm extends javax.swing.JFrame {
             @Override
             public void itemStateChanged(java.awt.event.ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
-                    showCheckInCheckOutDate();
+                    String customerData = comboBoxNames.getSelectedItem().toString();
+                    String customerId = customerData.split(" ")[2];
+                    showCheckInCheckOutDates(customerId);
                 }
             }
         });
@@ -258,7 +267,8 @@ public class CheckOutForm extends javax.swing.JFrame {
                 String[] parts = line.split(" ");
                 if (parts.length > 1 && !parts[3].equals("0")) {
                     if (line.contains(searchText)) {
-                        comboBoxNames.addItem(line);
+                        comboBoxNames.addItem(parts[0] + " " + parts[1] + " " + parts[2] + " " + parts[3]);
+                        showCheckInCheckOutDates(parts[2]);
                     }
                 }
             }
@@ -267,17 +277,18 @@ public class CheckOutForm extends javax.swing.JFrame {
         }
     }
 
-    private void showCheckInCheckOutDate() {
-        String customerName = comboBoxNames.getSelectedItem().toString();
-        String[] data = customerName.split(" ");
-        String roomID = data[3];
-        try (BufferedReader br = new BufferedReader(new FileReader("Data/Rooms.txt"))) {
+    private void searchCustomerNameActionPerformed(java.awt.event.ActionEvent evt) {
+        showCustomerNames();
+    }
+
+    private void showCheckInCheckOutDates(String customerId) {
+        try (BufferedReader br = new BufferedReader(new FileReader("Data/Customers.txt"))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(" ");
-                if (roomID.equals(parts[0])) {
-                    String[] roomData = line.split(" ");
-                    checkInDate.setText(roomData[4]);
+                if (parts.length > 1 && parts[2].equals(customerId)) {
+                    String[] customerData = line.split(" ");
+                    checkInDate.setText(customerData[4]);
                     checkOutDate.setText(LocalDate.now().toString());
                     break; // Add break statement to exit the loop after finding the room data
                 }
@@ -286,6 +297,27 @@ public class CheckOutForm extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
+
+    // private void showCheckInCheckOutDate() {
+    // String customerName = comboBoxNames.getSelectedItem().toString();
+    // String[] data = customerName.split(" ");
+    // String roomID = data[3];
+    // try (BufferedReader br = new BufferedReader(new
+    // FileReader("Data/Rooms.txt"))) {
+    // String line;
+    // while ((line = br.readLine()) != null) {
+    // String[] parts = line.split(" ");
+    // if (roomID.equals(parts[0])) {
+    // String[] roomData = line.split(" ");
+    // checkInDate.setText(roomData[4]);
+    // checkOutDate.setText(LocalDate.now().toString());
+    // break; // Add break statement to exit the loop after finding the room data
+    // }
+    // }
+    // } catch (Exception e) {
+    // e.printStackTrace();
+    // }
+    // }
 
     private void updateRoomStatus() {
         String[] customerData = comboBoxNames.getSelectedItem().toString().split(" ");
@@ -322,9 +354,7 @@ public class CheckOutForm extends javax.swing.JFrame {
     private void updateCustomerId() {
         String customerData = comboBoxNames.getSelectedItem().toString();
         String[] data = customerData.split(" ");
-        // String name = data[0];
-        // String surname = data[1];
-        // String customerID = data[2];
+
         String roomID = data[3];
 
         List<String> lines = new ArrayList<>();
@@ -343,6 +373,8 @@ public class CheckOutForm extends javax.swing.JFrame {
                 if (roomID.equals(parts[3])) {
                     String[] customer = line.split(" ");
                     customer[3] = "0";
+                    customer[4] = "0";// set checkin and checkout dates after customers leave
+                    customer[5] = "0";
                     line = String.join(" ", customer);
                     JOptionPane.showMessageDialog(null, "customer succesfully checked out");
                     dispose();

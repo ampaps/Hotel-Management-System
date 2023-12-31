@@ -5,6 +5,7 @@
 package Forms;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
@@ -85,6 +86,14 @@ public class CancelReservationForm extends javax.swing.JFrame {
                     jTextField2.setText(roomID);
                 }
             }
+        });
+
+        searchNamesField.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                showNamesWithReservation();
+            }
+
         });
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -250,6 +259,7 @@ public class CancelReservationForm extends javax.swing.JFrame {
     }
 
     private void showNamesWithReservation() {
+        namesBox.removeAllItems();
         try (BufferedReader br = new BufferedReader(new FileReader("Data/Reservations.txt"))) {
             String line;
             ArrayList<String> names = new ArrayList<>();
@@ -258,7 +268,8 @@ public class CancelReservationForm extends javax.swing.JFrame {
                 names.add(parts[0] + " " + parts[1] + " " + parts[2]);
             }
             for (String name : names) {
-                namesBox.addItem(name);
+                if (name.contains(searchNamesField.getText()))
+                    namesBox.addItem(name);
             }
         } catch (IOException e) {
             System.out.println(e);
